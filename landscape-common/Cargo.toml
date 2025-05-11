@@ -14,6 +14,9 @@ tokio = { workspace = true, features = ["full"] }
 homedir = { workspace = true }
 hostname = "0.3"
 
+sqlx = { workspace = true }
+
+
 toml_edit = { workspace = true }
 tracing = { workspace = true }
 
