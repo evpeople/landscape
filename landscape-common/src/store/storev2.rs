@@ -7,6 +7,7 @@ use std::{
     ops::Range,
     path::PathBuf,
 };
+use async_trait::async_trait;
 use crate::store::store_trait::LandScapeBaseStore;
 
 // 最大垃圾空间阈值
@@ -408,28 +409,28 @@ where
         self.readers.insert(self.current_era, BufReader::new(reader_file));
     }
 }
-
+#[async_trait]
 impl<T> LandScapeBaseStore<T> for StoreFileManager<T>
 where
     T: LandScapeStore + Serialize + for<'de> Deserialize<'de> + std::marker::Send,
 {
-    fn set(&mut self, data: T) {
+    async fn set(&mut self, data: T) {
         StoreFileManager::set(self, data)
     }
 
-    fn get(&mut self, key: &str) -> Option<T> {
+   async fn get(&mut self, key: &str) -> Option<T> {
         StoreFileManager::get(self, key)
     }
 
-    fn list(&mut self) -> Vec<T> {
+  async  fn list(&mut self) -> Vec<T> {
         StoreFileManager::list(self)
     }
 
-    fn del(&mut self, key: &str) {
+    async fn del(&mut self, key: &str) {
         StoreFileManager::del(self, key)
     }
 
-    fn truncate(&mut self) {
+   async fn truncate(&mut self) {
         StoreFileManager::truncate(self)
     }
 }

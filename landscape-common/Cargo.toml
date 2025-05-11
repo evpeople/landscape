@@ -25,3 +25,4 @@ ts-rs = { workspace = true }
 uuid = { workspace = true }
 
 libc = { workspace = true }
+async-trait ={ workspace = true }

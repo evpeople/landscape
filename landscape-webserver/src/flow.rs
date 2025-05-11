@@ -32,10 +32,10 @@ pub async fn get_flow_paths(
     mut dns_store: Box<dyn LandScapeBaseStore<DNSRuleConfig>>,
     mut wanip_store: StoreFileManager<WanIPRuleConfig>,
 ) -> Router {
-    let mut dns_rules = dns_store.list();
+    let mut dns_rules = dns_store.list().await;
     if dns_rules.is_empty() {
-        dns_store.set(DNSRuleConfig::default());
-        dns_rules = dns_store.list();
+        dns_store.set(DNSRuleConfig::default()).await;
+        dns_rules = dns_store.list().await;
     }
 
     let rules = store.list();
@@ -78,7 +78,7 @@ async fn start_dns_service(
     Json(DNSStartRequest { udp_port, .. }): Json<DNSStartRequest>,
 ) -> Json<Value> {
     let mut get_dns_store = state.dns_store.lock().await;
-    let dns_rules = get_dns_store.list();
+    let dns_rules = get_dns_store.list().await;
     drop(get_dns_store);
     // TODO 重置 Flow 相关 map 信息
 
@@ -142,7 +142,7 @@ async fn get_dns_rules(
     Query(DnsRuleQuery { flow_id }): Query<DnsRuleQuery>,
 ) -> Json<Value> {
     let mut get_store = state.dns_store.lock().await;
-    let mut dns_rules = get_store.list();
+    let mut dns_rules = get_store.list().await;
     dns_rules.sort_by(|a, b| a.index.cmp(&b.index));
     if let Some(flow_id) = flow_id {
         dns_rules.retain(|rule| rule.flow_id == flow_id);
@@ -157,8 +157,8 @@ async fn add_dns_rules(
 ) -> Json<Value> {
     let flow_id = dns_rule.flow_id;
     let mut get_store = state.dns_store.lock().await;
-    get_store.set(dns_rule);
-    let dns_rules = get_store.list();
+    get_store.set(dns_rule).await;
+    let dns_rules = get_store.list().await;
     drop(get_store);
     state.dns_service.flush_specific_flow_dns_rule(flow_id, dns_rules).await;
 
@@ -171,9 +171,9 @@ async fn del_dns_rules(
     Path(index): Path<String>,
 ) -> Json<Value> {
     let mut get_store = state.dns_store.lock().await;
-    if let Some(flow_config) = get_store.get(&index) {
-        get_store.del(&index);
-        let dns_rules = get_store.list();
+    if let Some(flow_config) = get_store.get(&index).await {
+        get_store.del(&index).await;
+        let dns_rules = get_store.list().await;
         drop(get_store);
         state.dns_service.flush_specific_flow_dns_rule(flow_config.flow_id, dns_rules).await;
     }

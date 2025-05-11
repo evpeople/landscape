@@ -41,6 +41,7 @@ use service::{pppd::get_iface_pppd_paths, wifi::get_wifi_service_paths};
 use tracing::{error, info};
 use landscape_common::dns::DNSRuleConfig;
 use landscape_common::store::store_trait::LandScapeBaseStore;
+use landscape_common::store::storev3::PostgresStoreManager;
 
 #[derive(Clone, Serialize, Deserialize)]
 struct SimpleResult {
@@ -53,7 +54,7 @@ async fn main() -> LdResult<()> {
         panic!("init log error: {e:?}");
     }
     banner();
-
+    let db_url="";
     let home_path = LAND_HOME_PATH.clone();
 
     let mut store_provider = LandscapeStoreServiceProvider::new(home_path.clone());
@@ -69,7 +70,7 @@ async fn main() -> LdResult<()> {
 
     let mut flow_store = StoreFileManager::new(home_path.clone(), "flow_rule".to_string());
     let mut dns_store: Box<dyn LandScapeBaseStore<DNSRuleConfig>> = Box::new(
-        StoreFileManager::new(home_path.clone(), "dns_rule".to_string())
+        PostgresStoreManager::new(db_url, "dns_rule".to_string()).await.unwrap()
     );
 
     let mut lan_ip_mark_store = StoreFileManager::new(home_path.clone(), "lan_ip_mark".to_string());
@@ -127,7 +128,7 @@ async fn main() -> LdResult<()> {
         iface_mark_store.truncate();
         iface_pppd_store.truncate();
         flow_store.truncate();
-        dns_store.truncate();
+        dns_store.truncate().await;
         lan_ip_mark_store.truncate();
         wan_ip_mark_store.truncate();
         ipv6pd_store.truncate();
@@ -157,7 +158,7 @@ async fn main() -> LdResult<()> {
             flow_store.set(each_config);
         }
         for each_config in dns_rules {
-            dns_store.set(each_config);
+            dns_store.set(each_config).await;
         }
 
         for each_config in lan_ip_mark {

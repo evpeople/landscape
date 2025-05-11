@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+use crate::dns::DNSResolveMode;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Copy, Eq, Hash, TS)]
 #[ts(export, export_to = "flow.ts")]
@@ -25,6 +26,24 @@ impl FlowDnsMark {
         match self {
             FlowDnsMark::KeepGoing => false,
             _ => true,
+        }
+    }
+    pub fn to_type_string(&self) -> &'static str {
+        match self {
+            FlowDnsMark::KeepGoing => "keep_going",
+            FlowDnsMark::Direct => "direct",
+            FlowDnsMark::Drop => "drop",
+            FlowDnsMark::Redirect{..} => "redirect",
+            FlowDnsMark::AllowReusePort => "allow_reuse_port",
+        }
+    }
+    pub fn to_flow_id(&self) -> i16 {
+        match self {
+            FlowDnsMark::KeepGoing => 0,
+            FlowDnsMark::Direct => 0,
+            FlowDnsMark::Drop => 0,
+            FlowDnsMark::Redirect{flow_id } => *flow_id as i16,
+            FlowDnsMark::AllowReusePort => 0,
         }
     }
 }

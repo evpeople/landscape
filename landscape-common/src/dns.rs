@@ -95,6 +95,15 @@ pub enum DNSResolveMode {
     Upstream { upstream: DnsUpstreamType, ips: Vec<IpAddr>, port: Option<u16> },
     CloudFlare { mode: CloudFlareMode },
 }
+impl DNSResolveMode {
+   pub fn to_type_string(&self) -> &'static str {
+        match self {
+            DNSResolveMode::Redirect { .. } => "redirect",
+            DNSResolveMode::Upstream { .. } => "upstream",
+            DNSResolveMode::CloudFlare { .. } => "cloudflare",
+        }
+    }
+}
 
 impl Default for DNSResolveMode {
     fn default() -> Self {
@@ -135,7 +144,15 @@ pub enum FilterResult {
     OnlyIPv4,
     OnlyIPv6,
 }
-
+impl FilterResult {
+    pub fn to_string(&self) -> &'static str {
+        match self {
+            FilterResult::Unfilter => "unfilter",
+            FilterResult::OnlyIPv4 => "only_ipv4",
+            FilterResult::OnlyIPv6 => "only_ipv6",
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use std::net::{IpAddr, Ipv4Addr};

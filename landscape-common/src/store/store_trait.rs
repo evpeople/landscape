@@ -1,11 +1,14 @@
-pub trait LandScapeBaseStore<T>:Send {
-    fn set(&mut self, data: T);
+use async_trait::async_trait;
 
-    fn get(&mut self, key: &str) -> Option<T>;
+#[async_trait]
+pub trait LandScapeBaseStore<T>: Send {
+    async fn set(&mut self, data: T);
 
-    fn list(&mut self) -> Vec<T>;
+    async fn get(&mut self, key: &str) -> Option<T>;
 
-    fn del(&mut self, key: &str);
+    async fn list(&mut self) -> Vec<T>;
 
-    fn truncate(&mut self);
+    async fn del(&mut self, key: &str);
+
+    async fn truncate(&mut self);
 }
