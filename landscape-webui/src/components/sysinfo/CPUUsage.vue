@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { ExhibitType } from "@/lib/sys";
+import {computed} from "vue";
+import {ExhibitType} from "@/lib/sys";
 
 import SourceProgress from "@/components/SouceProgress.vue";
-import { useSysInfo } from "@/stores/systeminfo";
-import { useI18n } from "vue-i18n";
-const { t } = useI18n({ useScope: "global" });
+import {useSysInfo} from "@/stores/systeminfo";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n({useScope: "global"});
 
 let sysinfo = useSysInfo();
 
@@ -24,7 +25,7 @@ const load_avg = computed(() => {
 <template>
   <!-- {{ sysinfo.router_status.cpus[0] }} -->
   <n-card content-style="display: flex; max-height: 240px;">
-    <template #header> CPU </template>
+    <template #header> CPU</template>
     <n-flex style="flex: 1" vertical justify="space-between">
       <n-flex vertical justify="space-between">
         <n-flex justify="space-between">
