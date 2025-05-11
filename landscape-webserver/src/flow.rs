@@ -13,7 +13,7 @@ use landscape_dns::{diff_server::LandscapeFiffFlowDnsService, ip_rule::update_wa
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tokio::sync::Mutex;
-
+use landscape_common::store::store_trait::LandScapeBaseStore;
 use crate::{
     error::{LandscapeApiError, LandscapeResult},
     SimpleResult,
@@ -23,13 +23,13 @@ use crate::{
 struct LandscapeFlowServices {
     dns_service: LandscapeFiffFlowDnsService,
     store: Arc<Mutex<StoreFileManager<FlowConfig>>>,
-    dns_store: Arc<Mutex<StoreFileManager<DNSRuleConfig>>>,
+    dns_store: Arc<Mutex<Box<dyn LandScapeBaseStore<DNSRuleConfig>>>>,
     wanip_store: Arc<Mutex<StoreFileManager<WanIPRuleConfig>>>,
 }
 
 pub async fn get_flow_paths(
     mut store: StoreFileManager<FlowConfig>,
-    mut dns_store: StoreFileManager<DNSRuleConfig>,
+    mut dns_store: Box<dyn LandScapeBaseStore<DNSRuleConfig>>,
     mut wanip_store: StoreFileManager<WanIPRuleConfig>,
 ) -> Router {
     let mut dns_rules = dns_store.list();

@@ -7,6 +7,7 @@ use std::{
     ops::Range,
     path::PathBuf,
 };
+use crate::store::store_trait::LandScapeBaseStore;
 
 // 最大垃圾空间阈值
 const JUNK_DATA_MAX_SIZE: u64 = 1024 * 8;
@@ -405,5 +406,30 @@ where
         // 添加对应的 reader
         let reader_file = OpenOptions::new().read(true).open(current_era_file_path).unwrap();
         self.readers.insert(self.current_era, BufReader::new(reader_file));
+    }
+}
+
+impl<T> LandScapeBaseStore<T> for StoreFileManager<T>
+where
+    T: LandScapeStore + Serialize + for<'de> Deserialize<'de> + std::marker::Send,
+{
+    fn set(&mut self, data: T) {
+        StoreFileManager::set(self, data)
+    }
+
+    fn get(&mut self, key: &str) -> Option<T> {
+        StoreFileManager::get(self, key)
+    }
+
+    fn list(&mut self) -> Vec<T> {
+        StoreFileManager::list(self)
+    }
+
+    fn del(&mut self, key: &str) {
+        StoreFileManager::del(self, key)
+    }
+
+    fn truncate(&mut self) {
+        StoreFileManager::truncate(self)
     }
 }

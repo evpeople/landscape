@@ -39,6 +39,8 @@ use service::{icmp_ra::get_iface_icmpv6ra_paths, nat::get_iface_nat_paths};
 use service::{ipconfig::get_iface_ipconfig_paths, ipvpd::get_iface_pdclient_paths};
 use service::{pppd::get_iface_pppd_paths, wifi::get_wifi_service_paths};
 use tracing::{error, info};
+use landscape_common::dns::DNSRuleConfig;
+use landscape_common::store::store_trait::LandScapeBaseStore;
 
 #[derive(Clone, Serialize, Deserialize)]
 struct SimpleResult {
@@ -66,7 +68,9 @@ async fn main() -> LdResult<()> {
     let mut iface_pppd_store = StoreFileManager::new(home_path.clone(), "iface_pppd".to_string());
 
     let mut flow_store = StoreFileManager::new(home_path.clone(), "flow_rule".to_string());
-    let mut dns_store = StoreFileManager::new(home_path.clone(), "dns_rule".to_string());
+    let mut dns_store: Box<dyn LandScapeBaseStore<DNSRuleConfig>> = Box::new(
+        StoreFileManager::new(home_path.clone(), "dns_rule".to_string())
+    );
 
     let mut lan_ip_mark_store = StoreFileManager::new(home_path.clone(), "lan_ip_mark".to_string());
 
