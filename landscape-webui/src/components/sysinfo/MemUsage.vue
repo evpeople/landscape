@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { computed } from "vue";
 import SourceProgress from "@/components/SouceProgress.vue";
 
 import { useSysInfo } from "@/stores/systeminfo";
 
 let sysinfo = useSysInfo();
+const { t } = useI18n({ useScope: "global" });
 
 const percentage = computed(() => {
   // console.log(sysinfo.mem.used_mem / sysinfo.mem.total_mem);
@@ -57,19 +59,19 @@ const swap = computed(() => {
     <n-flex style="flex: 1" vertical justify="space-between">
       <n-flex vertical justify="space-between">
         <n-flex justify="space-between">
-          <n-flex>内存: {{ men.total_mem }} GB</n-flex>
-          <n-flex>已用: {{ men.used_mem }} GB</n-flex>
+          <n-flex>  {{ t("mem") }} : {{ men.total_mem }} GB</n-flex>
+          <n-flex>{{ t("used") }}: {{ men.used_mem }} GB</n-flex>
         </n-flex>
 
         <n-flex justify="space-between">
-          <n-flex>交换: {{ swap.total_swap }} GB</n-flex>
-          <n-flex>已用: {{ swap.used_swap }} GB</n-flex>
+          <n-flex>{{ t("swap") }}: {{ swap.total_swap }} GB</n-flex>
+          <n-flex>{{ t("used") }}: {{ swap.used_swap }} GB</n-flex>
         </n-flex>
       </n-flex>
 
       <n-flex justify="space-around" align="center">
-        <SourceProgress :value="percentage"></SourceProgress>
-        <SourceProgress :warn="false" :value="swap_percentage"></SourceProgress>
+        <SourceProgress :label="t('memory_usage')" :value="percentage"></SourceProgress>
+        <SourceProgress :label="t('swap_usage')" :warn="false" :value="swap_percentage"></SourceProgress>
       </n-flex>
     </n-flex>
   </n-card>
