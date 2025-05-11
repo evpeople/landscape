@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ExhibitType } from "@/lib/sys";
-import { NProgress } from "naive-ui";
-import { useThemeVars } from "naive-ui";
+import {ExhibitType} from "@/lib/sys";
+import {NProgress} from "naive-ui";
+import {useThemeVars} from "naive-ui";
 // import {get_cpu} from "./api/sys";
-import { changeColor } from "seemly";
-import { computed, ref } from "vue";
+import {changeColor} from "seemly";
+import {computed, ref} from "vue";
 
 interface Props {
   value: number;
@@ -15,7 +15,7 @@ interface Props {
 }
 
 
-const warn = defineModel("warn", { default: true });
+const warn = defineModel("warn", {default: true});
 
 const props = withDefaults(defineProps<Props>(), {
   exhibit_type: ExhibitType.Dashboard,
