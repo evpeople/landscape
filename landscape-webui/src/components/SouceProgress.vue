@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {ExhibitType} from "@/lib/sys";
-import {NProgress} from "naive-ui";
-import {useThemeVars} from "naive-ui";
+import { ExhibitType } from "@/lib/sys";
+import { NProgress } from "naive-ui";
+import { useThemeVars } from "naive-ui";
 // import {get_cpu} from "./api/sys";
-import {changeColor} from "seemly";
-import {computed, ref} from "vue";
+import { changeColor } from "seemly";
+import { computed, ref } from "vue";
 
 interface Props {
   value: number;
@@ -14,8 +14,7 @@ interface Props {
   labelPosition?: "inside" | "outside"; // label显示位置
 }
 
-
-const warn = defineModel("warn", {default: true});
+const warn = defineModel("warn", { default: true });
 
 const props = withDefaults(defineProps<Props>(), {
   exhibit_type: ExhibitType.Dashboard,
@@ -31,9 +30,10 @@ const percentage = computed(() => {
 });
 
 const displayText = computed(() => {
-  return props.label ? `${props.label}: ${percentage.value}%` : `${percentage.value}%`;
+  return props.label
+    ? `${props.label}: ${percentage.value}%`
+    : `${percentage.value}%`;
 });
-
 
 const percentage_color = computed(() => {
   if (warn.value) {
@@ -52,12 +52,12 @@ const percentage_color = computed(() => {
 <template>
   <!-- {{ themeVars }} -->
   <n-progress
-      v-if="props.exhibit_type === ExhibitType.Dashboard"
-      type="dashboard"
-      gap-position="bottom"
-      :color="percentage_color"
-      :rail-color="changeColor(percentage_color, { alpha: 0.2 })"
-      :percentage="percentage"
+    v-if="props.exhibit_type === ExhibitType.Dashboard"
+    type="dashboard"
+    gap-position="bottom"
+    :color="percentage_color"
+    :rail-color="changeColor(percentage_color, { alpha: 0.2 })"
+    :percentage="percentage"
   >
     <template v-if="props.showLabel" #default>
       <span :style="{ color: percentage_color }">
@@ -67,12 +67,12 @@ const percentage_color = computed(() => {
   </n-progress>
 
   <n-progress
-      v-else-if="props.exhibit_type === ExhibitType.Line"
-      type="line"
-      :color="percentage_color"
-      :rail-color="changeColor(percentage_color, { alpha: 0.2 })"
-      :percentage="percentage"
-      :indicator-placement="props.labelPosition"
-      :indicator-text="props.showLabel ? displayText : undefined"
+    v-else-if="props.exhibit_type === ExhibitType.Line"
+    type="line"
+    :color="percentage_color"
+    :rail-color="changeColor(percentage_color, { alpha: 0.2 })"
+    :percentage="percentage"
+    :indicator-placement="props.labelPosition"
+    :indicator-text="props.showLabel ? displayText : undefined"
   />
 </template>

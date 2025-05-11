@@ -1,37 +1,37 @@
 <script setup lang="ts">
-import {useI18n} from "vue-i18n";
-import {computed} from "vue";
+import { useI18n } from "vue-i18n";
+import { computed } from "vue";
 import SourceProgress from "@/components/SouceProgress.vue";
 
-import {useSysInfo} from "@/stores/systeminfo";
+import { useSysInfo } from "@/stores/systeminfo";
 
 let sysinfo = useSysInfo();
-const {t} = useI18n({useScope: "global"});
+const { t } = useI18n({ useScope: "global" });
 
 const percentage = computed(() => {
   // console.log(sysinfo.mem.used_mem / sysinfo.mem.total_mem);
   return (
-      sysinfo.router_status.mem.used_mem / sysinfo.router_status.mem.total_mem
+    sysinfo.router_status.mem.used_mem / sysinfo.router_status.mem.total_mem
   );
 });
 
 const swap_percentage = computed(() => {
   // console.log(sysinfo.mem.used_mem / sysinfo.mem.total_mem);
   return (
-      sysinfo.router_status.mem.used_swap / sysinfo.router_status.mem.total_swap
+    sysinfo.router_status.mem.used_swap / sysinfo.router_status.mem.total_swap
   );
 });
 
 const men = computed(() => {
   return {
     total_mem: (
-        sysinfo.router_status.mem.total_mem /
-        1024 /
-        1024 /
-        1024
+      sysinfo.router_status.mem.total_mem /
+      1024 /
+      1024 /
+      1024
     ).toFixed(2),
     used_mem: (sysinfo.router_status.mem.used_mem / 1024 / 1024 / 1024).toFixed(
-        2
+      2
     ),
   };
 });
@@ -39,16 +39,16 @@ const men = computed(() => {
 const swap = computed(() => {
   return {
     total_swap: (
-        sysinfo.router_status.mem.total_swap /
-        1024 /
-        1024 /
-        1024
+      sysinfo.router_status.mem.total_swap /
+      1024 /
+      1024 /
+      1024
     ).toFixed(2),
     used_swap: (
-        sysinfo.router_status.mem.used_swap /
-        1024 /
-        1024 /
-        1024
+      sysinfo.router_status.mem.used_swap /
+      1024 /
+      1024 /
+      1024
     ).toFixed(2),
   };
 });
@@ -70,8 +70,15 @@ const swap = computed(() => {
       </n-flex>
 
       <n-flex justify="space-around" align="center">
-        <SourceProgress :label="t('memory_usage')" :value="percentage"></SourceProgress>
-        <SourceProgress :label="t('swap_usage')" :warn="false" :value="swap_percentage"></SourceProgress>
+        <SourceProgress
+          :label="t('memory_usage')"
+          :value="percentage"
+        ></SourceProgress>
+        <SourceProgress
+          :label="t('swap_usage')"
+          :warn="false"
+          :value="swap_percentage"
+        ></SourceProgress>
       </n-flex>
     </n-flex>
   </n-card>
